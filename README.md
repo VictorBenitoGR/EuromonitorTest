@@ -7,4 +7,4 @@ The intelligent collection, cleaning, processing and visualization of data is an
 > [!CAUTION]
 > Certain data files, specifically those with the extension .xlsx, are not intended to be open-sourced. These files may contain proprietary or sensitive information and are subject to restrictions.
 > - Do not open source, distribute, or reproduce any files with the .xlsx extension without explicit permission from Euromonitor International.
-> - If you have questions or need clarification, please contact me at [victorbenitogr@gmail.com].
+> - If you have questions or need clarification, please contact me at victorbenitogr@gmail.com.
