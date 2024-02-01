@@ -9,9 +9,6 @@ The intelligent collection, cleaning, processing and visualization of data is an
 > - Do not open source, distribute, or reproduce any files with the .xlsx extension without explicit permission from Euromonitor International.
 > - If you have questions or need clarification, please contact me at victorbenitogr@gmail.com.
 
-# Your Project Name
-
-A brief description of your project.
 
 ## Clone Repository
 
