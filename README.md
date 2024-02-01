@@ -29,4 +29,4 @@ To clone this repository to your local machine, follow these steps:
     ```bash
     git clone https://github.com/VictorBenitoGR/EuromonitorTest.git
     ```
-Now you can open ".src/EuromonitorTest.R" on VSCode/Rstudio!
+Now you can open ".src/EuromonitorTest.R" on VSCode/RStudio!
