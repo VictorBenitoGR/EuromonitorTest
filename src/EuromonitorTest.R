@@ -1,19 +1,20 @@
 # * = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 # * EUROMONITOR TEST
-# 
+# * https://github.com/VictorBenitoGR/EuromonitorTest
 # * = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 # *** PACKAGES *** ------------------------------------------------------------
 
 # install.packages("PackageName")
 
-install.packages("conflicted")
-
-library(conflicted)
+install.packages("conflicted") # Conflict management
+library(conflicted) # Conflict management
 conflict_prefer("filter", "dplyr")
 conflict_prefer("lag", "dplyr")
 
 library(dplyr) # Data manipulation/transformation
+
+library(tidyr) # Data manipulation/transformation
 
 library(stringr) # Strings (text) manipulation
 
@@ -23,11 +24,11 @@ library(openxlsx) # Reading/writing/editing excel files
 
 library(ggplot2) # Data visualization
 
+library(scales) # Scale functions for ggplot2
+
 library(tidyverse) # Data manipulation/transformation
 
-
-
-# *** FILE 
+# *** FILE *** ----------------------------------------------------------------
 
 # * Specify the file path
 path <- "./data/market_data.xlsx"
@@ -94,7 +95,64 @@ colnames(channel_definitions) <- c(
   "Industry", "Edition", "Outlet", "Hierarchy_level", "Definition"
 )
 
+# *** FILTER *** --------------------------------------------------------------
+
+# * mexico_market_size
+levels(factor(mexico_market_size$Data_Type))
+mexico_market_size <- mexico_market_size[
+  mexico_market_size$Data_Type == "Total Volume",
+]
+mexico_market_size$Country <- "Mexico"
+
+# * usa_market_size
+levels(factor(usa_market_size$Data_Type))
+usa_market_size <- usa_market_size[
+  usa_market_size$Data_Type == "Total Volume",
+]
+usa_market_size$Country <- "USA"
+
+market_size <- rbind(mexico_market_size, usa_market_size)
+
 # *** MARKET PERFORMANCE *** --------------------------------------------------
 
+# * Reshape the data from wide to long format
+market_size_long <- market_size %>%
+  pivot_longer(
+    cols = `2016`:`2026`,
+    names_to = "Year", values_to = "Market_Size"
+  )
 
+# * Get the sum of every "Market_Size" for each year by country
+market_size_summary <- market_size_long %>%
+  group_by(Year, Country) %>%
+  summarize(Total_Market_Size = sum(Market_Size))
+
+# * Convert "Year" to numeric
+market_size_summary$Year <- as.numeric(market_size_summary$Year)
+
+# * Create a cuberoot transformation function (scales package)
+cuberoot_trans <- trans_new(
+  name = "cuberoot",
+  transform = function(x) x^(1/3),
+  inverse = function(x) x^3
+)
+
+# * Create a ggplot object
+market_size_plot <- ggplot(market_size_summary, aes(
+  x = Year, y = Total_Market_Size,
+  color = Country
+)) +
+  geom_point(size = 5, alpha = 0.3) +
+  geom_line(size = 1) +
+  scale_y_continuous(trans = "log10") +
+  facet_wrap(~Country, scales = "free") +
+  theme_linedraw() +
+  labs(title = "Total Market Size", x = NULL, y = "million litres") +
+  theme(plot.title = element_text(face = "bold")) +
+  scale_color_manual(values = c("Mexico" = "#b80000", "USA" = "#0000ca"))
+
+# * Save the plot
+ggsave("./assets/market_size_plot.jpg", market_size_plot,
+  width = 10, height = 5
+)
 
