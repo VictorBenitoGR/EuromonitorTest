@@ -133,6 +133,23 @@ usa_channel_breakdown$Country <- "USA"
 # ! trends
 trends <- rbind(mexico_channel_breakdown, usa_channel_breakdown)
 
+# * mexico_market_share
+# Delete the last row of mexico_market_share
+mexico_market_share <- mexico_market_share[-nrow(mexico_market_share), ]
+mexico_market_share$Country <- "Mexico"
+# Replace "-" with "0" in mexico_market_share
+mexico_market_share[mexico_market_share == "-"] <- "0"
+
+# * usa_market_share
+# Delete the last row of usa_market_share
+usa_market_share <- usa_market_share[-nrow(usa_market_share), ]
+usa_market_share$Country <- "USA"
+# Replace "-" with "0" in usa_market_share
+usa_market_share[usa_market_share == "-"] <- "0"
+
+# ! market_share
+market_share <- rbind(mexico_market_share, usa_market_share)
+
 # *** MARKET PERFORMANCE *** --------------------------------------------------
 
 # * Reshape the data from wide to long format
@@ -208,6 +225,7 @@ ggsave("./assets/trends_plot.jpg", trends_plot,
 future_outlook <- market_size_long %>%
   select(Subcategory, Country, Year, Market_Size)
 
+# ? Today's February 2, 2024
 future_outlook <- future_outlook %>%
   filter(Year %in% c(2024, 2025, 2026))
 
@@ -215,10 +233,7 @@ future_outlook_summary <- future_outlook %>%
   group_by(Year, Subcategory, Country) %>%
   summarize(Total_Market_Size = sum(Market_Size))
 
-# Load required libraries
-library(ggplot2)
-
-# Create a grouped bar plot
+# Create plot
 future_outlook_plot <- ggplot(future_outlook_summary, aes(x = Year, y = Total_Market_Size, fill = Subcategory)) +
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~Country, scales = "free") +
@@ -232,7 +247,30 @@ ggsave("./assets/future_outlook_plot.jpg", future_outlook_plot, width = 10, heig
 
 
 # *** COMPETITIVE ENVIRONMENT *** ---------------------------------------------
+# * Reshape the data from wide to long format
+market_share_long <- market_share %>%
+  pivot_longer(
+    cols = `2016`:`2021`,
+    names_to = "Year", values_to = "Market_Share"
+  )
 
+market_share_long$Year <- as.numeric(market_share_long$Year)
+market_share_long$Market_Share <- as.numeric(market_share_long$Market_Share)
 
-# *** OPPORTUNITIES AND RECOMMENDATIONS *** -----------------------------------
+market_share_summary <- market_share_long %>%
+  group_by(National_Brand_Owner, Country) %>%
+  summarize(Average_Market_Share = mean(Market_Share))
+install.packages("viridis")
+library(viridis)
+# Create pie chart
+market_share_plot <- ggplot(market_share_summary, aes(x = "", y = Average_Market_Share, fill = National_Brand_Owner)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_polar("y", start = 0) +
+  facet_wrap(~Country) +
+  labs(title = "Market Share by National Brand Owner", x = NULL, y = NULL) +
+  theme(plot.title = element_text(face = "bold")) +
+  scale_fill_viridis_d(option = "turbo", direction = 1) +
+  theme_linedraw()
 
+# Save the pie chart
+ggsave("./assets/market_share_plot.jpg", market_share_plot, width = 10, height = 5)
