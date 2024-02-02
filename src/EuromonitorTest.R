@@ -7,6 +7,12 @@
 
 # install.packages("PackageName")
 
+install.packages("conflicted")
+
+library(conflicted)
+conflict_prefer("filter", "dplyr")
+conflict_prefer("lag", "dplyr")
+
 library(dplyr) # Data manipulation/transformation
 
 library(stringr) # Strings (text) manipulation
@@ -19,37 +25,76 @@ library(ggplot2) # Data visualization
 
 library(tidyverse) # Data manipulation/transformation
 
-# *** FILE *** ----------------------------------------------------------------
 
-# Specify the file path
-file_path <- "./data/market_data.xlsx"
 
-# Read each sheet into a separate data frame
-mexico_market_size <- read.xlsx(file_path, sheet = "mexico_market_size")
-mexico_market_share <- read.xlsx(file_path, sheet = "mexico_market_share")
-mexico_channel_breakdown <- read.xlsx(file_path,
-  sheet = "mexico_channel_breakdown"
+# *** FILE 
+
+# * Specify the file path
+path <- "./data/market_data.xlsx"
+
+# * mexico_market_size
+mexico_market_size <- read.xlsx(path, sheet = "mexico_market_size")
+print(colnames(mexico_market_size))
+colnames(mexico_market_size) <- c(
+  "Category", "Subcategory", "Data_Type", "Unit", "2016", "2017", "2018",
+  "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026"
 )
-usa_market_size <- read.xlsx(file_path, sheet = "usa_market_size")
-usa_market_share <- read.xlsx(file_path, sheet = "usa_market_share")
-usa_channel_breakdown <- read.xlsx(file_path, sheet = "usa_channel_breakdown")
-category_definitions <- read.xlsx(file_path, sheet = "category_definitions")
-channel_definitions <- read.xlsx(file_path, sheet = "channel_definitions")
+
+# * mexico_market_share
+mexico_market_share <- read.xlsx(path, sheet = "mexico_market_share")
+print(colnames(mexico_market_share))
+colnames(mexico_market_share) <- c(
+  "Subcategory", "Data_Type", "National_Brand_Owner", "Unit", "2016", "2017",
+  "2018", "2019", "2020", "2021"
+)
+
+# * mexico_channel_breakdown
+mexico_channel_breakdown <- read.xlsx(path, sheet = "mexico_channel_breakdown")
+print(colnames(mexico_channel_breakdown))
+colnames(mexico_channel_breakdown) <- c(
+  "Category", "Subcategory", "Outlet", "Unit", "2016", "2017", "2018", "2019",
+  "2020", "2021"
+)
+
+# * usa_market_size
+usa_market_size <- read.xlsx(path, sheet = "usa_market_size")
+print(colnames(usa_market_size))
+colnames(usa_market_size) <- c(
+  "Category", "Subcategory", "Data_Type", "Unit", "2016", "2017", "2018",
+  "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026"
+)
+
+# * usa_market_share
+usa_market_share <- read.xlsx(path, sheet = "usa_market_share")
+print(colnames(usa_market_share))
+colnames(usa_market_share) <- c(
+  "Subcategory", "Data_Type", "National_Brand_Owner", "Unit", "2016", "2017",
+  "2018", "2019", "2020", "2021"
+)
+
+# * usa_channel_breakdown
+usa_channel_breakdown <- read.xlsx(path, sheet = "usa_channel_breakdown")
+print(colnames(usa_channel_breakdown))
+colnames(usa_channel_breakdown) <- c(
+  "Category", "Subcategory", "Outlet", "Unit", "2016", "2017", "2018", "2019",
+  "2020", "2021"
+)
+
+# * category_definitions
+category_definitions <- read.xlsx(path, sheet = "category_definitions")
+print(colnames(category_definitions))
+colnames(category_definitions) <- c(
+  "Industry", "Edition", "Category", "Hierarchy_level", "Definition"
+)
+
+# * channel_definitions
+channel_definitions <- read.xlsx(path, sheet = "channel_definitions")
+print(colnames(channel_definitions))
+colnames(channel_definitions) <- c(
+  "Industry", "Edition", "Outlet", "Hierarchy_level", "Definition"
+)
 
 # *** MARKET PERFORMANCE *** --------------------------------------------------
 
-# Combine data frames for Mexico and the US
-combined_market_size <- rbind(mexico_market_size, usa_market_size)
 
-# Melt the data frame to long format for easy plotting
-melted_data <- reshape2::melt(combined_market_size, id.vars = c("Category", "Subcategory", "Data Type", "Unit"))
 
-# Plotting
-ggplot(melted_data, aes(x = variable, y = value, fill = Category)) +
-  geom_bar(stat = "identity", position = "dodge", color = "black") +
-  facet_wrap(~Country, scales = "free_y") +
-  labs(title = "Market Performance Comparison: Mexico vs. USA",
-       x = "Year",
-       y = "Market Size",
-       fill = "Category") +
-  theme_minimal()
