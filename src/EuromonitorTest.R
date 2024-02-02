@@ -77,7 +77,7 @@ colnames(usa_market_share) <- c(
 usa_channel_breakdown <- read.xlsx(path, sheet = "usa_channel_breakdown")
 print(colnames(usa_channel_breakdown))
 colnames(usa_channel_breakdown) <- c(
-  "Category", "Subcategory", "Outlet", "Unit", "2016", "2017", "2018", "2019",
+  "Category", "Outlet", "Subcategory", "Unit", "2016", "2017", "2018", "2019",
   "2020", "2021"
 )
 
@@ -111,7 +111,27 @@ usa_market_size <- usa_market_size[
 ]
 usa_market_size$Country <- "USA"
 
+# ! market_size
 market_size <- rbind(mexico_market_size, usa_market_size)
+
+# * mexico_channel_breakdown
+levels(factor(mexico_channel_breakdown$Subcategory))
+mexico_channel_breakdown <- mexico_channel_breakdown[
+  mexico_channel_breakdown$Subcategory %in% c("Store-Based Retailing",
+  "Non-Store Retailing", "On-trade"),
+]
+mexico_channel_breakdown$Country <- "Mexico"
+
+# * usa_channel_breakdown
+levels(factor(usa_channel_breakdown$Subcategory))
+usa_channel_breakdown <- usa_channel_breakdown[
+  usa_channel_breakdown$Subcategory %in% c("Store-Based Retailing",
+  "Non-Store Retailing", "On-trade"),
+]
+usa_channel_breakdown$Country <- "USA"
+
+# ! trends
+trends <- rbind(mexico_channel_breakdown, usa_channel_breakdown)
 
 # *** MARKET PERFORMANCE *** --------------------------------------------------
 
@@ -139,8 +159,7 @@ cuberoot_trans <- trans_new(
 
 # * Create a ggplot object
 market_size_plot <- ggplot(market_size_summary, aes(
-  x = Year, y = Total_Market_Size,
-  color = Country
+  x = Year, y = Total_Market_Size, color = Country
 )) +
   geom_point(size = 5, alpha = 0.3) +
   geom_line(size = 1) +
@@ -155,4 +174,40 @@ market_size_plot <- ggplot(market_size_summary, aes(
 ggsave("./assets/market_size_plot.jpg", market_size_plot,
   width = 10, height = 5
 )
+
+# *** TRENDS *** --------------------------------------------------------------
+
+# * Reshape the data from wide to long format
+trends_long <- trends %>%
+  pivot_longer(
+    cols = `2016`:`2021`,
+    names_to = "Year", values_to = "Trend"
+  )
+trends <- trends_long
+
+trends$Trend <- as.numeric(trends$Trend)
+
+# Create a ggplot object
+trends_plot <- ggplot(trends, aes(
+  x = Year, y = Trend, fill = Subcategory
+)) +
+  geom_bar(stat = "identity", position = "stack") + # Stack the bars
+  facet_wrap(~Country, scales = "free") +
+  labs(title = "Trends", x = NULL, y = "million litres") +
+  theme(plot.title = element_text(face = "bold")) +
+  theme_linedraw()
+
+# Save the plot
+ggsave("./assets/trends_plot.jpg", trends_plot,
+  width = 10, height = 5
+)
+
+
+# *** FUTURE OUTLOOK *** ------------------------------------------------------
+
+
+# *** COMPETITIVE ENVIRONMENT *** ---------------------------------------------
+
+
+# *** OPPORTUNITIES AND RECOMMENDATIONS *** -----------------------------------
 
