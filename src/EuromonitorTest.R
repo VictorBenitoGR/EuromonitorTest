@@ -191,9 +191,9 @@ trends$Trend <- as.numeric(trends$Trend)
 trends_plot <- ggplot(trends, aes(
   x = Year, y = Trend, fill = Subcategory
 )) +
-  geom_bar(stat = "identity", position = "stack") + # Stack the bars
+  geom_bar(stat = "identity", position = "fill") + # Stack the bars
   facet_wrap(~Country, scales = "free") +
-  labs(title = "Trends", x = NULL, y = "million litres") +
+  labs(title = "Trends (%)", x = NULL, y = "million litres") +
   theme(plot.title = element_text(face = "bold")) +
   theme_linedraw()
 
@@ -204,6 +204,31 @@ ggsave("./assets/trends_plot.jpg", trends_plot,
 
 
 # *** FUTURE OUTLOOK *** ------------------------------------------------------
+
+future_outlook <- market_size_long %>%
+  select(Subcategory, Country, Year, Market_Size)
+
+future_outlook <- future_outlook %>%
+  filter(Year %in% c(2024, 2025, 2026))
+
+future_outlook_summary <- future_outlook %>%
+  group_by(Year, Subcategory, Country) %>%
+  summarize(Total_Market_Size = sum(Market_Size))
+
+# Load required libraries
+library(ggplot2)
+
+# Create a grouped bar plot
+future_outlook_plot <- ggplot(future_outlook_summary, aes(x = Year, y = Total_Market_Size, fill = Subcategory)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~Country, scales = "free") +
+  labs(title = "Future Outlook (2024 - 2026)", x = NULL, y = "Total Market Size") +
+  theme(plot.title = element_text(face = "bold")) +
+  scale_y_log10() +
+  theme_linedraw()
+
+# Save the plot
+ggsave("./assets/future_outlook_plot.jpg", future_outlook_plot, width = 10, height = 5)
 
 
 # *** COMPETITIVE ENVIRONMENT *** ---------------------------------------------
