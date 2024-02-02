@@ -29,4 +29,27 @@ To clone this repository to your local machine, follow these steps:
     ```bash
     git clone https://github.com/VictorBenitoGR/EuromonitorTest.git
     ```
-Now you can open ".src/EuromonitorTest.R" on VSCode/RStudio!
+
+5. Open VSCode/RStudio and select the project folder.
+
+6. You can find the main R file on ./src!
+
+## Visualization
+
+### Market Performance
+
+![Market Performance](./assets/market_size_plot.jpg)
+
+### Trends
+
+![Trends](./assets/trends_plot.jpg)
+
+### Future outlook
+
+![Future outlook](./assets/future_outlook_plot.jpg)
+
+### Competitive environment
+
+![Competitive environment](./assets/market_share_plot.jpg)
+
+
