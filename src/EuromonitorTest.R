@@ -117,16 +117,20 @@ market_size <- rbind(mexico_market_size, usa_market_size)
 # * mexico_channel_breakdown
 levels(factor(mexico_channel_breakdown$Subcategory))
 mexico_channel_breakdown <- mexico_channel_breakdown[
-  mexico_channel_breakdown$Subcategory %in% c("Store-Based Retailing",
-  "Non-Store Retailing", "On-trade"),
+  mexico_channel_breakdown$Subcategory %in% c(
+    "Store-Based Retailing",
+    "Non-Store Retailing", "On-trade"
+  ),
 ]
 mexico_channel_breakdown$Country <- "Mexico"
 
 # * usa_channel_breakdown
 levels(factor(usa_channel_breakdown$Subcategory))
 usa_channel_breakdown <- usa_channel_breakdown[
-  usa_channel_breakdown$Subcategory %in% c("Store-Based Retailing",
-  "Non-Store Retailing", "On-trade"),
+  usa_channel_breakdown$Subcategory %in% c(
+    "Store-Based Retailing",
+    "Non-Store Retailing", "On-trade"
+  ),
 ]
 usa_channel_breakdown$Country <- "USA"
 
@@ -170,7 +174,7 @@ market_size_summary$Year <- as.numeric(market_size_summary$Year)
 # * Create a cuberoot transformation function (scales package)
 cuberoot_trans <- trans_new(
   name = "cuberoot",
-  transform = function(x) x^(1/3),
+  transform = function(x) x^(1 / 3),
   inverse = function(x) x^3
 )
 
@@ -234,16 +238,24 @@ future_outlook_summary <- future_outlook %>%
   summarize(Total_Market_Size = sum(Market_Size))
 
 # Create plot
-future_outlook_plot <- ggplot(future_outlook_summary, aes(x = Year, y = Total_Market_Size, fill = Subcategory)) +
+future_outlook_plot <- ggplot(
+  future_outlook_summary,
+  aes(x = Year, y = Total_Market_Size, fill = Subcategory)
+) +
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~Country, scales = "free") +
-  labs(title = "Future Outlook (2024 - 2026)", x = NULL, y = "Total Market Size") +
+  labs(
+    title = "Future Outlook (2024 - 2026)",
+    x = NULL, y = "Total Market Size"
+  ) +
   theme(plot.title = element_text(face = "bold")) +
   scale_y_log10() +
   theme_linedraw()
 
 # Save the plot
-ggsave("./assets/future_outlook_plot.jpg", future_outlook_plot, width = 10, height = 5)
+ggsave("./assets/future_outlook_plot.jpg", future_outlook_plot,
+  width = 10, height = 5
+)
 
 
 # *** COMPETITIVE ENVIRONMENT *** ---------------------------------------------
