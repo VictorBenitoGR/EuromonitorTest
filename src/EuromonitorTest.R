@@ -252,7 +252,7 @@ future_outlook_plot <- ggplot(
   scale_y_log10() +
   theme_linedraw()
 
-# Save the plot
+# Save it
 ggsave("./assets/future_outlook_plot.jpg", future_outlook_plot,
   width = 10, height = 5
 )
