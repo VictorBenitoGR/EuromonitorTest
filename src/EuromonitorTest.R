@@ -237,7 +237,7 @@ future_outlook_summary <- future_outlook %>%
   group_by(Year, Subcategory, Country) %>%
   summarize(Total_Market_Size = sum(Market_Size))
 
-# Create plot
+# Future outlook plot
 future_outlook_plot <- ggplot(
   future_outlook_summary,
   aes(x = Year, y = Total_Market_Size, fill = Subcategory)
