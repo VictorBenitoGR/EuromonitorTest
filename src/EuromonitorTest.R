@@ -275,7 +275,10 @@ market_share_summary <- market_share_long %>%
 install.packages("viridis")
 library(viridis)
 # Create pie chart
-market_share_plot <- ggplot(market_share_summary, aes(x = "", y = Average_Market_Share, fill = National_Brand_Owner)) +
+market_share_plot <- ggplot(
+  market_share_summary,
+  aes(x = "", y = Average_Market_Share, fill = National_Brand_Owner)
+) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar("y", start = 0) +
   facet_wrap(~Country) +
@@ -285,4 +288,6 @@ market_share_plot <- ggplot(market_share_summary, aes(x = "", y = Average_Market
   theme_linedraw()
 
 # Save the pie chart
-ggsave("./assets/market_share_plot.jpg", market_share_plot, width = 10, height = 5)
+ggsave("./assets/market_share_plot.jpg", market_share_plot,
+  width = 10, height = 5
+)
