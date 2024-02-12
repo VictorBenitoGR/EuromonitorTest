@@ -178,7 +178,7 @@ cuberoot_trans <- trans_new(
   inverse = function(x) x^3
 )
 
-# * Create a ggplot object
+# * market_size_plot
 market_size_plot <- ggplot(market_size_summary, aes(
   x = Year, y = Total_Market_Size, color = Country
 )) +
